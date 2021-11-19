@@ -4,11 +4,21 @@
     <form action="">
       <div class="mb-3">
         <label class="form-label">邮箱地址</label>
-        <validate-input :rules="emailRules"></validate-input>
+        <validate-input
+          v-model="emailVal"
+          :rules="emailRules"
+          placeholder="请输入邮箱地址"
+          type="text"
+        ></validate-input>
       </div>
       <div class="mb-3">
-        <label for="exampleInputPassword1" class="form-label">密码</label>
-        <input type="password" class="form-control" id="exampleInputPassword1" />
+        <label class="form-label">密码</label>
+        <validate-input
+          v-model="passwordVal"
+          :rules="passwordRules"
+          placeholder="请输入密码"
+          type="password"
+        ></validate-input>
       </div>
     </form>
     <ColumnList :list="list" />
@@ -16,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import ColumnList, { ColumnProps } from './components/ColumnList.vue'
 import GlobalHeader, { UserProps } from './components/GlobalHeader.vue'
@@ -73,14 +83,22 @@ export default defineComponent({
     ValidateInput,
   },
   setup() {
+    const emailVal = ref('')
     const emailRules: RulesProp = [
       { type: 'require', message: '电子邮箱地址不能为空' },
       { type: 'email', message: '请输入正确的电子邮箱地址' },
     ]
+
+    const passwordVal = ref('')
+    const passwordRules: RulesProp = [{ type: 'require', message: '密码不能为空' }]
+
     return {
       currentUser,
       list: testProps,
+      emailVal,
       emailRules,
+      passwordVal,
+      passwordRules,
     }
   },
 })
