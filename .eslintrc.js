@@ -18,6 +18,7 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    'no-unused-vars': 'warn', // 未使用的参数
     'no-param-reassign': 'off', // 直接修改参数的值
     'global-require': 'off', // 全局的 require 导入
     'import/no-unresolved': 'off', // 只解析 import 方式的导入
