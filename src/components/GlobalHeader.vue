@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-dark bg-primary">
+  <nav class="navbar navbar-dark bg-primary justify-content-between mb-4 px-4">
     <router-link class="navbar-brand" to="/">者也专栏</router-link>
     <ul v-if="!user.isLogin" class="list-inline mb-0">
       <li class="list-inline-item">
@@ -25,12 +25,7 @@
 import { defineComponent, PropType } from 'vue'
 import Dropdown from './Dropdown.vue'
 import DropdownItem from './DropdownItem.vue'
-
-export interface UserProps {
-  isLogin: boolean
-  name?: string
-  id?: number
-}
+import { UserProps } from '@/store'
 
 export default defineComponent({
   name: 'GlobalHeader',

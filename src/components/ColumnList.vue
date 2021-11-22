@@ -1,31 +1,34 @@
 <template>
-  <el-row :gutter="20">
-    <el-col v-for="column of columnList" :key="column.id" :span="8">
-      <el-card :body-style="{ padding: '0px' }">
-        <div class="column-wrap">
-          <el-image class="image" :src="column.avatar" :alt="column.title" fit="fill" />
-          <h5>{{ column.title }}</h5>
-          <div class="des">
-            <p>{{ column.description }}</p>
-          </div>
-          <div class="btn">
-            <el-button type="primary" plain>进入专栏</el-button>
-          </div>
+  <div class="row">
+    <div v-for="column in columnList" :key="column.id" class="col-4 mb-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body text-center">
+          <img
+            :src="column.avatar"
+            :alt="column.title"
+            class="rounded-circle border border-light my-3"
+          />
+          <h5 class="card-title">{{ column.title }}</h5>
+          <p class="card-text text-left">{{ column.description }}</p>
+          <router-link :to="`/column/${column.id}`" class="btn btn-outline-primary">
+            进入专栏
+          </router-link>
+          <!-- <router-link
+              :to="{ name: 'column', params: { id: column.id } }"
+              class="btn btn-primary"
+              plain
+            >
+              进入专栏
+            </router-link> -->
         </div>
-      </el-card>
-    </el-col>
-  </el-row>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue'
-
-export interface ColumnProps {
-  id: string
-  title: string
-  avatar?: string
-  description: string
-}
+import { ColumnProps } from '@/datas/testData'
 
 export default defineComponent({
   name: 'ColumnList',
@@ -56,38 +59,9 @@ export default defineComponent({
 })
 </script>
 
-<style>
-.column-wrap {
-  display: flex;
-  /* align-content: center; */
-  justify-content: center;
-  flex-wrap: wrap;
-  padding: 15px;
-}
-
-.column-wrap .image {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  display: block;
-}
-.column-wrap h5 {
-  width: 100%;
-  text-align: center;
-}
-.column-wrap .des {
-  width: 100%;
-  height: 60px;
-  margin-bottom: 20px;
-}
-.column-wrap .des p {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.column-wrap .btn {
-  width: 100%;
-  text-align: center;
+<style scoped>
+.card-body img {
+  width: 50px;
+  height: 50px;
 }
 </style>

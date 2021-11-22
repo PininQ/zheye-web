@@ -23,6 +23,7 @@ module.exports = {
     'global-require': 'off', // 全局的 require 导入
     'import/no-unresolved': 'off', // 只解析 import 方式的导入
     'import/extensions': 'off', // 引入的模块的文件名扩展
+    'import/prefer-default-export': 'off', // 默认的 export 不是必须的
     'vue/multi-word-component-names': 'off', // 组件名称始终为多字
     'vue/no-multiple-template-root': 'off', // 组件根节点可以是多个节点
   },
