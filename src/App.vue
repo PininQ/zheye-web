@@ -9,6 +9,7 @@
           :rules="emailRules"
           placeholder="请输入邮箱地址"
           type="text"
+          ref="inputRef"
         ></validate-input>
       </div>
       <div class="mb-3">
@@ -89,6 +90,7 @@ export default defineComponent({
     ValidateForm,
   },
   setup() {
+    const inputRef = ref<null | HTMLElement>(null)
     const emailVal = ref('')
     const emailRules: RulesProp = [
       { type: 'require', message: '电子邮箱地址不能为空' },
@@ -105,6 +107,7 @@ export default defineComponent({
     return {
       currentUser,
       list: testProps,
+      inputRef,
       emailVal,
       emailRules,
       passwordVal,
