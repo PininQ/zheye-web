@@ -1,6 +1,17 @@
 <template>
   <div class="validate-input-container pb-3">
+    <textarea
+      v-if="tag === 'textarea'"
+      type="text"
+      class="form-control"
+      :class="{ 'is-invalid': inputRef.error }"
+      :value="inputRef.val"
+      v-bind="$attrs"
+      @blur="validateInput"
+      @input="updateValue"
+    />
     <input
+      v-else
       type="text"
       class="form-control"
       :class="{ 'is-invalid': inputRef.error }"
@@ -21,11 +32,13 @@ import { emitter } from './ValidateForm.vue'
 const emailReg = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 
 interface RuleProp {
-  type: 'require' | 'email'
+  type: 'required' | 'email'
   message: string
 }
 
 export type RulesProp = RuleProp[]
+
+export type TagType = 'input' | 'textarea'
 
 export default defineComponent({
   name: 'Component',
@@ -35,6 +48,10 @@ export default defineComponent({
     modelValue: {
       type: String,
       default: '',
+    },
+    tag: {
+      type: String as PropType<TagType>,
+      default: 'input',
     },
   },
   setup(props, context) {
@@ -56,7 +73,7 @@ export default defineComponent({
           let passed = true
           inputRef.message = rule.message
           switch (rule.type) {
-            case 'require':
+            case 'required':
               passed = inputRef.val.trim() !== ''
               break
             case 'email':
