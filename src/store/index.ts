@@ -29,6 +29,11 @@ export interface GlobalDataProps {
   user: UserProps
 }
 
+const getAndCommit = async (url: string, mutationName: string, commit: Commit) => {
+  const { data } = await axios.get(url)
+  commit(mutationName, data)
+}
+
 const store = createStore<GlobalDataProps>({
   state: {
     columns: [],
@@ -53,12 +58,22 @@ const store = createStore<GlobalDataProps>({
     fetchColumns(state, rawData) {
       state.columns = rawData.data.list
     },
+    fetchColumn(state, rawData) {
+      state.columns = [rawData.data]
+    },
+    fetchPosts(state, rawData) {
+      state.posts = rawData.data.list
+    },
   },
   actions: {
-    fetchColumns(context) {
-      axios.get('/api/columns').then((resp) => {
-        context.commit('fetchColumns', resp.data)
-      })
+    fetchColumns({ commit }) {
+      getAndCommit(`/api/columns`, 'fetchColumns', commit)
+    },
+    fetchColumn({ commit }, cid) {
+      getAndCommit(`/api/columns/${cid}`, 'fetchColumn', commit)
+    },
+    fetchPostts({ commit }, cid) {
+      getAndCommit(`/api/columns/${cid}/posts`, 'fetchPosts', commit)
     },
   },
   getters: {
