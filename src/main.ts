@@ -8,11 +8,13 @@ import App from './App.vue'
 
 axios.interceptors.request.use((config) => {
   config.params = { ...config.params }
+  store.commit('setLoading', true)
   return config
 })
-// axios.get('/api/columns?currentPage=1&pageSize=6').then((resp) => {
-//   console.log(resp.data)
-// })
+axios.interceptors.response.use((config) => {
+  store.commit('setLoading', false)
+  return config
+})
 
 const app = createApp(App)
 app.use(ElementPlus)
