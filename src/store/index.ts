@@ -4,9 +4,10 @@ import { PostProps, testPosts } from '@/datas/testData'
 
 export interface UserProps {
   isLogin: boolean
-  name?: string
-  id?: number
-  columnId?: number
+  nickName?: string
+  _id?: string
+  column?: string
+  email?: string
 }
 
 export interface ImageProps {
@@ -25,6 +26,7 @@ export interface ColumnProps {
 
 export interface GlobalDataProps {
   loading: boolean
+  token: string
   columns: ColumnProps[]
   posts: PostProps[]
   user: UserProps
@@ -35,25 +37,32 @@ const getAndCommit = async (url: string, mutationName: string, commit: Commit) =
   commit(mutationName, data)
 }
 
+const postAndCommit = async (url: string, mutationName: string, commit: Commit, payload: any) => {
+  const { data } = await axios.post(url, payload)
+  commit(mutationName, data)
+  return data
+}
+
 const store = createStore<GlobalDataProps>({
   state: {
     loading: false,
+    token: localStorage.getItem('token') || '',
     columns: [],
     posts: testPosts,
     user: {
-      isLogin: true,
-      name: 'China DCI',
-      columnId: 1,
+      isLogin: false,
+      nickName: '',
+      column: '',
     },
   },
   mutations: {
-    login(state) {
-      state.user = {
-        ...state.user,
-        isLogin: true,
-        name: 'China DCI',
-      }
-    },
+    // login(state) {
+    //   state.user = {
+    //     ...state.user,
+    //     isLogin: true,
+    //     name: 'China DCI',
+    //   }
+    // },
     createPost(state, newPost) {
       state.posts.push(newPost)
     },
@@ -66,8 +75,20 @@ const store = createStore<GlobalDataProps>({
     fetchPosts(state, rawData) {
       state.posts = rawData.data.list
     },
+    fetchCurrentUser(state, rawData) {
+      state.user = {
+        isLogin: true,
+        ...rawData.data,
+      }
+    },
     setLoading(state, status) {
       state.loading = status
+    },
+    login(state, rawData) {
+      const { token } = rawData.data
+      state.token = token
+      localStorage.setItem('token', token)
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`
     },
   },
   actions: {
@@ -80,14 +101,26 @@ const store = createStore<GlobalDataProps>({
     fetchPosts({ commit }, cid) {
       getAndCommit(`/api/columns/${cid}/posts`, 'fetchPosts', commit)
     },
+    fetchCurrentUser({ commit }) {
+      getAndCommit(`/api/user/current`, 'fetchCurrentUser', commit)
+    },
+    login({ commit }, payload) {
+      return postAndCommit(`/api/user/login`, 'login', commit, payload)
+    },
+    // 组合的 action 登录之后获取当前用户信息
+    loginAndFetch({ dispatch }, loginData) {
+      return dispatch('login', loginData).then(() => {
+        return dispatch('fetchCurrentUser')
+      })
+    },
   },
   getters: {
     getColumnById: (state) => (id: string) => {
       // eslint-disable-next-line no-underscore-dangle
       return state.columns.find((c) => c._id === id)
     },
-    getPostsByCid: (state) => (cid: number) => {
-      return state.posts.filter((post) => post.columnId === cid)
+    getPostsByCid: (state) => (cid: string) => {
+      return state.posts.filter((post) => post.column === cid)
     },
   },
 })
